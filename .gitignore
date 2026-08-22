@@ -1,0 +1,33 @@
+# Node / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Build files
+*.apk
+*.aab
