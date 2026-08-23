@@ -11,18 +11,51 @@ import {
 } from 'react-native';
 
 export default function HomeScreen() {
+  const API_URL = 'http://192.168.18.80:8000';
+
   const [inputText, setInputText] = useState('');
   const [translation, setTranslation] = useState('');
+  const [isTranslating, setIsTranslating] = useState(false);
 
-  const handleTranslate = () => {
-    if (!inputText.trim()) {
-      return;
+
+  const handleTranslate = async () => {
+  if (!inputText.trim()) {
+    return;
+  }
+
+  try {
+    setIsTranslating(true);
+    setTranslation('');
+
+    const response = await fetch(`${API_URL}/translate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: inputText,
+        source_language: 'auto',
+        target_language: 'malayalam',
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
     }
 
-    // Temporary translation for UI testing.
-    // The real LLM translation will be connected later.
-    setTranslation('Translation will appear here.');
-  };
+    const data = await response.json();
+
+    setTranslation(data.translation);
+  } catch (error) {
+    console.error('Translation error:', error);
+
+    setTranslation(
+      'Unable to translate right now. Please check your connection.'
+    );
+  } finally {
+    setIsTranslating(false);
+  }
+};
 
   const handleClear = () => {
     setInputText('');
@@ -88,20 +121,24 @@ export default function HomeScreen() {
         </View>
 
         {/* Translate button */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.translateButton,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={handleTranslate}
-        >
-          <Text style={styles.translateButtonText}>Translate</Text>
-        </Pressable>
-
+       <Pressable
+  style={({ pressed }) => [
+    styles.translateButton,
+    pressed && styles.buttonPressed,
+    isTranslating && styles.buttonDisabled,
+  ]}
+  onPress={handleTranslate}
+  disabled={isTranslating}
+>
+  <Text style={styles.translateButtonText}>
+    {isTranslating ? 'Translating...' : 'Translate'}
+  </Text>
+</Pressable>
         {/* Output section */}
         <View style={styles.outputCard}>
-          <Text style={styles.outputLabel}>MALAYALAM</Text>
-
+          <Text style={styles.translateButtonText}>
+           {isTranslating ? 'Translating...' : 'Translate'}
+          </Text>
           {translation ? (
             <Text style={styles.translationText}>{translation}</Text>
           ) : (
@@ -251,6 +288,9 @@ const styles = StyleSheet.create({
   buttonPressed: {
     opacity: 0.75,
   },
+  buttonDisabled: {
+  opacity: 0.6,
+},
 
   translateButtonText: {
     color: '#FFFFFF',
