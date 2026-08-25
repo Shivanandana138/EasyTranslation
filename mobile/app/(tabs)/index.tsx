@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import * as Clipboard from 'expo-clipboard';
+import * as Speech from 'expo-speech';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -68,6 +69,19 @@ export default function HomeScreen() {
   }
 
   await Clipboard.setStringAsync(translation);
+};
+const handleListen = async () => {
+  if (!translation) {
+    return;
+  }
+
+  Speech.stop();
+
+  Speech.speak(translation, {
+    language: 'ml-IN',
+    rate: 0.85,
+    pitch: 1.0,
+  });
 };
 
   return (
@@ -164,9 +178,12 @@ export default function HomeScreen() {
                  <Text style={styles.actionText}>Copy</Text>
               </Pressable>
 
-              <Pressable style={styles.actionButton}>
-                <Text style={styles.actionText}>Listen</Text>
-              </Pressable>
+             <Pressable
+  style={styles.actionButton}
+  onPress={handleListen}
+>
+  <Text style={styles.actionText}>Listen</Text>
+</Pressable>
             </View>
           )}
         </View>
