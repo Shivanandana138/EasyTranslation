@@ -15,7 +15,7 @@ The goal is to provide a simple, natural and user-friendly translation experienc
 
 ---
 
-## Features
+## ✨ Features
 
 ### Current Features
 
