@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as Clipboard from 'expo-clipboard';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -61,6 +62,13 @@ export default function HomeScreen() {
     setInputText('');
     setTranslation('');
   };
+  const handleCopy = async () => {
+  if (!translation) {
+    return;
+  }
+
+  await Clipboard.setStringAsync(translation);
+};
 
   return (
     <KeyboardAvoidingView
@@ -149,8 +157,11 @@ export default function HomeScreen() {
 
           {translation && (
             <View style={styles.actionRow}>
-              <Pressable style={styles.actionButton}>
-                <Text style={styles.actionText}>Copy</Text>
+              <Pressable
+                style={styles.actionButton}
+                onPress={handleCopy}>
+            
+                 <Text style={styles.actionText}>Copy</Text>
               </Pressable>
 
               <Pressable style={styles.actionButton}>
